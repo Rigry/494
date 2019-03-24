@@ -30,8 +30,8 @@ using RTS = mcu::PA1;
 
 int main()
 {
-    auto button_1 = mcu::Button::make<DI1>();
-    auto button_2 = mcu::Button::make<DI2>();
+    auto& button_1 = mcu::Button::make<DI1>();
+    auto& button_2 = mcu::Button::make<DI2>();
     auto [alarm_heat_1, alarm_uv_1, alarm_heat_2, alarm_uv_2, start_1, start_2] 
         = make_pins<mcu::PinMode::Output,DO1,DO2,DO3,DO4,DO7,DO8>();
     
@@ -73,8 +73,8 @@ int main()
     while (1) {
         modbus_master();
     
-        on_1 ^= button_1;
-        on_2 ^= button_2;
+        on_1 ^= button_1.push();
+        on_2 ^= button_2.push();
 
         start_1 = (on_1 and not overheat_1);
         start_2 = (on_2 and not overheat_2);
