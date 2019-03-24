@@ -10,7 +10,7 @@ class Tube
     bool on {false};
     bool overheat {false};
     
-    Button button;
+    mcu::Button button;
     Pin start;
     Pin alarm_uv;
     Pin alarm_heat;
@@ -32,31 +32,28 @@ public:
         , temperature {temperature}
     {}
 
-    // Register<address, Modbus_function::read_03, 4> uv_level;
-    // Register<address, Modbus_function::read_03, 5> temperature;
-
     void operator()(){
-        // switch (step) {
-        //     case wait:
-        //         on ^= button;
-        //         if (on) {
-        //             start = true;
-        //             step = work;
-        //         } else
-        //             start = false;
-        //     break;
-        //     case work:
-        //         on ^= button;
-        //         if (on)
-        //             start = true;
-        //         else {
-        //             start = false;
-        //             step = wait;
-        //         }
-        //     break;
-        //     case overheating:
-        //     break;
-        // }
+        switch (step) {
+            case wait:
+                on ^= button;
+                if (on) {
+                    start = true;
+                    step = work;
+                } else
+                    start = false;
+            break;
+            case work:
+                on ^= button;
+                if (on)
+                    start = true;
+                else {
+                    start = false;
+                    step = wait;
+                }
+            break;
+            case overheating:
+            break;
+        }
     }
     
 };
