@@ -5,7 +5,7 @@
 #include "pin.h"
 #include "buttons.h"
 #include "modbus_master.h"
-// #include "tube.h"
+#include "tube.h"
 #include "literals.h"
 #include "init_clock.h"
 #include <bitset>
@@ -62,34 +62,36 @@ int main()
             timeout, set, modbus
         );
 
-    bool on_1 {false};
-    bool on_2 {false};
-    bool overheat_1 {false};
-    bool overheat_2 {false};
-    constexpr auto recovery_temperature {20};
-    constexpr auto max_temperature {55};
-    constexpr auto min_uv_level {40};
+     Tube<Button_1, Start_1, Alarm_uv_1, Alarm_heat_1> tube_1{modbus.uv_level_1, modbus.temperature_1};
+
+    // bool on_1 {false};
+    // bool on_2 {false};
+    // bool overheat_1 {false};
+    // bool overheat_2 {false};
+    // constexpr auto recovery_temperature {20};
+    // constexpr auto max_temperature {55};
+    // constexpr auto min_uv_level {40};
 
     while (1) {
         modbus_master();
 
-        on_1 ^= button_1;
-        on_2 ^= button_2;
+        // on_1 ^= button_1;
+        // on_2 ^= button_2;
 
-        start_1 = (on_1 and not overheat_1);
-        start_2 = (on_2 and not overheat_2);
+        // start_1 = (on_1 and not overheat_1);
+        // start_2 = (on_2 and not overheat_2);
 
-        if (overheat_1 |= modbus.temperature_1 > max_temperature)
-            overheat_1  = modbus.temperature_1 > recovery_temperature;
+        // if (overheat_1 |= modbus.temperature_1 > max_temperature)
+        //     overheat_1  = modbus.temperature_1 > recovery_temperature;
         
-        if (overheat_2 |= modbus.temperature_2 > max_temperature)
-            overheat_2  = modbus.temperature_2 > recovery_temperature;
+        // if (overheat_2 |= modbus.temperature_2 > max_temperature)
+        //     overheat_2  = modbus.temperature_2 > recovery_temperature;
 
-        alarm_heat_1 = overheat_1;
-        alarm_heat_2 = overheat_2;
+        // alarm_heat_1 = overheat_1;
+        // alarm_heat_2 = overheat_2;
 
-        alarm_uv_1 = (on_1 and modbus.uv_level_1 < min_uv_level);
-        alarm_uv_2 = (on_2 and modbus.uv_level_2 < min_uv_level);
+        // alarm_uv_1 = (on_1 and modbus.uv_level_1 < min_uv_level);
+        // alarm_uv_2 = (on_2 and modbus.uv_level_2 < min_uv_level);
 
         __WFI();
     }
