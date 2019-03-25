@@ -30,8 +30,7 @@ using RTS = mcu::PA1;
 
 int main()
 {
-    auto& button_1 = mcu::Button::make<DI1>();
-    auto& button_2 = mcu::Button::make<DI2>();
+    auto [button_1, button_2] = make_pins<mcu::PinMode::Input,DI1,DI2>();
     auto [alarm_heat_1, alarm_uv_1, alarm_heat_2, alarm_uv_2, start_1, start_2] 
         = make_pins<mcu::PinMode::Output,DO1,DO2,DO3,DO4,DO7,DO8>();
     
@@ -45,15 +44,15 @@ int main()
         , UART::Baudrate::BR9600
     };
 
-    constexpr auto address_1 {1};
-    constexpr auto address_2 {2};
+    constexpr auto address_1 {0x0A};
+    constexpr auto address_2 {0x0B};
 
     struct Modbus {
         
-        Register<address_1, Modbus_function::read_03, 4> uv_level_1;
-        Register<address_1, Modbus_function::read_03, 5> temperature_1;
-        Register<address_2, Modbus_function::read_03, 4> uv_level_2;
-        Register<address_2, Modbus_function::read_03, 5> temperature_2;
+        Register<address_1, Modbus_function::read_03, 0> uv_level_1;
+        Register<address_1, Modbus_function::read_03, 1> temperature_1;
+        Register<address_2, Modbus_function::read_03, 0> uv_level_2;
+        Register<address_2, Modbus_function::read_03, 1> temperature_2;
         
     } modbus;
 
@@ -73,8 +72,8 @@ int main()
     while (1) {
         modbus_master();
     
-        on_1 ^= button_1.push();
-        on_2 ^= button_2.push();
+        on_1 = button_1;
+        on_2 = button_2;
 
         start_1 = (on_1 and not overheat_1);
         start_2 = (on_2 and not overheat_2);
