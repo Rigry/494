@@ -45,7 +45,7 @@ int main()
     };
 
     constexpr auto address_1 {0x0A};
-    constexpr auto address_2 {0x0B};
+    constexpr auto address_2 {0x0C};
 
     struct Modbus {
         
@@ -72,8 +72,8 @@ int main()
     while (1) {
         modbus_master();
     
-        on_1 = button_1;
-        on_2 = button_2;
+        on_1 = on_2 ? false : button_1;
+        on_2 = on_1 ? false : button_2;
 
         start_1 = (on_1 and not overheat_1);
         start_2 = (on_2 and not overheat_2);
